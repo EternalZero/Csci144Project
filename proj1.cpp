@@ -7,6 +7,7 @@
 #include <time.h>
 #include <sstream>
 #include<vector>
+
 using namespace std;
 
 void initialize_prices();
@@ -48,15 +49,17 @@ if (myfile.is_open())
     while (!myfile.eof())
     {
        myfile>>word;
-        goo1.push_back(word);
+       cout<<word<<endl;
+       int num = atoi(word.c_str());
+        goo.push_back(num);
     }
     myfile.close();
   }
 else cout << "Unable to open file";
 
-for(int i; i<goo1.size();i++)
+for(int i; i<goo.size();i++)
 {
-    cout<<goo1[i]<<endl;
+    cout<<goo[i]<<endl;
 }
 
 ifstream myfile1("apple.txt");
@@ -69,7 +72,6 @@ if (myfile1.is_open())
     }
     myfile1.close();
   }
-else cout << "Unable to open file";
 
 
 ifstream myfile2 ("att.txt");
@@ -82,7 +84,6 @@ if (myfile2.is_open())
     }
     myfile2.close();
   }
-else cout << "Unable to open file";
 
 
 ifstream myfile3 ("hp.txt");
@@ -95,7 +96,6 @@ if (myfile3.is_open())
     }
     myfile3.close();
   }
-else cout << "Unable to open file";
 
 ifstream myfile4 ("sam.txt");
 if (myfile4.is_open())
@@ -107,11 +107,29 @@ if (myfile4.is_open())
     }
     myfile4.close();
   }
-else cout << "Unable to open file";
 
 
+//  for (auto &s : goo1){
+//    std::stringstream parser(s);
+//    double x;
+//
+//    parser >> x;
+//
+//    goo.push_back(x);}
+
+//    for(int i; i<goo.size();i++)
+//{
+//    cout<<goo[i]<<endl;
+//}
 
 }
+
+
+
+
+
+
+
 
 
 
