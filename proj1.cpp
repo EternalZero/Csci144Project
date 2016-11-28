@@ -1,10 +1,12 @@
 #include<iomanip>
 #include"try.h"
+#include <pthread.h>
+#include <unistd.h>
 
 
 using namespace std;
 
-
+pthread_mutex_t mutex1, mutex2;
 
 
 
@@ -69,7 +71,7 @@ void ProcessTransact(string transact)
 
 
 
-void *buy(void)
+void *buy(void*)
 {
     cout<<fixed;
     cout <<setprecision(2);
@@ -83,8 +85,10 @@ void *buy(void)
     string num_of_shares = ss.str();
    string trans = "Buy "+stck+" "+num_of_shares+" "+bprice;//string vectors not ints
    //cout<<trans<<endl<<endl;
+    cout<<"Thread is here buy";
    ProcessTransact(trans);
-   Sleep(10);
+   sleep(2);
+   return NULL;
 
 }
 
@@ -128,7 +132,7 @@ stocks choose_from_bought()
 
 
 
-void *sell()
+void *sell(void*)
 {
     cout<<fixed;
     cout <<setprecision(2);
@@ -160,7 +164,11 @@ void *sell()
 
     string trans="Sell "+temp.name+" "+sh+" "+str;
    // cout<<trans<<endl<<endl;
+   cout<<"Thread is here: sell"<<endl;
     ProcessTransact(trans);
+
+    sleep(2);
+    return NULL;
 
 
 }
@@ -178,18 +186,23 @@ srand(time(0));
 Total_Balance = 100000;
 initialize_prices();
 create_stocks();
+
+pthread_mutex_init(&mutex1,NULL);
+pthread_mutex_init(&mutex2,NULL);
+pthread_t cThreads;
+
 int num_trans = 0;
 bool isBuy = 1;
 while(num_trans<10000)
 {
     if(isBuy == 1){
-        buy();
+       pthread_create(&cThreads,NULL,buy,NULL);
         ++num_trans;
         isBuy = 0;
     }
     else{
        // cout<<num_trans<<endl;
-        sell();
+        pthread_create(&cThreads,NULL,sell,NULL);
         ++num_trans;
 
         isBuy = 1;
