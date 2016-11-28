@@ -5,6 +5,9 @@
 #include <time.h>
 #include <sstream>
 #include<vector>
+ #include <conio.h>
+ #include <windows.h>
+ #include <ctime>
 using namespace std;
 
 
@@ -25,10 +28,10 @@ vector<string>Tesla;
 
 string rand_stock()
 {
-    srand(time(NULL));
    string arr[] = {"Google", "Apple", "AT&T", "Tesla","HP","Samsung"};
-   int x = rand() % 6;
-   return (arr[x]);
+   int x = (rand() % 6);
+  return (arr[x]);
+
 }
 
 
@@ -158,6 +161,9 @@ int How_Many_Stocks_toBuy(int total, string bprice)
     double allowance = total*.15; //amount of money allowed to spend
 
     int num_of_shares = allowance/ppstock;
+   // if(num_of_shares < 1)
+        //cout<<"Not enough to buy stock"<<endl<<endl;
+
     return (num_of_shares);
 }
 
@@ -184,6 +190,7 @@ void stocks::stock_info()
     stocks hp;
     stocks TESLA;
     stocks SAMSUNG;
+    stocks TRAP;
 
 void create_stocks()// stocks* g, stocks* a, stocks* attt, stocks* hpp, stocks* tesla, stocks* samsung)
 {
@@ -229,6 +236,8 @@ void create_stocks()// stocks* g, stocks* a, stocks* attt, stocks* hpp, stocks* 
     SAMSUNG.price_list = Samsung;
     SAMSUNG.shares = 0;
 
+    TRAP.name = "trap";
+
 }
 
 
@@ -250,3 +259,49 @@ void check_all_stocks()
 }
 
 
+
+stocks which_stock_buy(string stk, int share)
+{
+    //cout<<"This is stk being checked: "<<stk<<endl;
+    if (stk == GOOGLE.name)
+    {GOOGLE.shares+=share;
+        return GOOGLE;}
+    else if (stk == APPLE.name)
+        {APPLE.shares+=share;
+        return APPLE;}
+    else if(stk == att.name)
+        {att.shares+=share;
+        return att;}
+    else if(stk== TESLA.name)
+        {TESLA.shares+=share;
+        return TESLA;}
+    else if (stk == SAMSUNG.name)
+        {SAMSUNG.shares += share;
+        return SAMSUNG;}
+    else if (stk == hp.name)
+        {hp.shares+=share;
+        return hp;}
+}
+
+stocks which_stock_sell(string stk)
+{
+    //cout<<"This is stk being checked: "<<stk<<endl;
+    if (stk == GOOGLE.name)
+    {GOOGLE.shares= 0;
+        return GOOGLE;}
+    else if (stk == APPLE.name)
+        {APPLE.shares=0;
+        return APPLE;}
+    else if(stk == att.name)
+        {att.shares=0;
+        return att;}
+    else if(stk== TESLA.name)
+        {TESLA.shares=0;
+        return TESLA;}
+    else if (stk == SAMSUNG.name)
+        {SAMSUNG.shares= 0;
+        return SAMSUNG;}
+    else if (stk == hp.name)
+        {hp.shares=0;
+        return hp;}
+}

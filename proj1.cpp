@@ -1,14 +1,8 @@
-
+#include<iomanip>
 #include"try.h"
 
 
 using namespace std;
-
-
-
-
-
-
 
 
 
@@ -22,83 +16,196 @@ double Total_Balance;
 
 
 
-stocks which_stock(string stk)
-{
-    //cout<<"This is stk being checked: "<<stk<<endl;
-    if (stk == GOOGLE.name)
-        return GOOGLE;
-    else if (stk == APPLE.name)
-        return APPLE;
-    else if(stk == att.name)
-        return att;
-    else if(stk== TESLA.name)
-        return TESLA;
-    else if (stk == SAMSUNG.name)
-        return SAMSUNG;
-    else if (stk == hp.name)
-        return hp;
-}
-
 
 
 
 
 void ProcessTransact(string transact)
 {
-    istringstream iss(transact);
+
+    cout<<fixed;
+    cout <<setprecision(2);
+
+
     string word;
+    string word2;
+    string word3;
+    int share;
+   // cout<<"This is current Total Balance: "<<Total_Balance<<endl;
+    istringstream iss(transact);
     iss>>word;
     //cout<<"1st word"<<word<<endl;
     if (word == "Buy"){
             iss>>word;
-            stocks temp = ;
-            which_stock(word).stock_info();
+            iss>>word2;
+            iss>> word3;
+
+            share = atoi(word2.c_str());
+            double buying =atof(word3.c_str());
+            //mutex lock
+            Total_Balance -= (share*buying);
+          //  cout<<"New Total Balance: "<<Total_Balance<<endl<<endl;
+            //mutex unlock
+            which_stock_buy(word, share);//.stock_info();
+    }
+
+    else{
+            iss>>word; //name of stock
+            iss>>word2; //number of stocks
+            iss>>word3; //price at which stocks will be sold at
+            //put mutex here lock
+            share =  atoi(word2.c_str());
+            double selling = atof(word3.c_str());
+            Total_Balance += (share*selling);
+          //  cout<<"New Total Balance: "<<Total_Balance<<endl<<endl;
+            //unlock
+            which_stock_sell(word);//.stock_info();
 
 
 
-//
-//    }
-//
-//    else
-//    {
-//
-//    }
 
-}
+    }
 }
 
 
 
 void *buy(void)
 {
+    cout<<fixed;
+    cout <<setprecision(2);
+
+
    string stck = rand_stock();
     string bprice = buyprice(stck);
 
     stringstream ss;
     ss<<How_Many_Stocks_toBuy(Total_Balance,bprice);
     string num_of_shares = ss.str();
-   string trans = "Buy "+stck+" "+bprice+" "+num_of_shares;//string vectors not ints
+   string trans = "Buy "+stck+" "+num_of_shares+" "+bprice;//string vectors not ints
+   //cout<<trans<<endl<<endl;
    ProcessTransact(trans);
+   Sleep(10);
+
+}
 
 
-//cout<<trans<<endl;
+stocks choose_from_bought()
+{
+    vector<stocks>bought;
+    if (GOOGLE.shares != 0)
+    {
+        bought.push_back(GOOGLE);
+    }
+    if (APPLE.shares != 0)
+    {
+        bought.push_back(APPLE);
+    }
+    if (TESLA.shares != 0)
+    {
+        bought.push_back(TESLA);
+    }
+    if (hp.shares != 0)
+    {
+        bought.push_back(hp);
+    }
+    if (att.shares != 0)
+    {
+        bought.push_back(att);
+    }
+    if(SAMSUNG.shares != 0)
+    {
+        bought.push_back(SAMSUNG);
+    }
+   //cout<<bought.size()<<endl;
+   if(bought.size() != 0){
+    int x = rand() % bought.size();
+    return (bought[x]);}
+    else
+        //cout<<"Nothing to sell"<<endl;
+        return (TRAP);
+
+}
+
+
+
+void *sell()
+{
+    cout<<fixed;
+    cout <<setprecision(2);
+
+
+   // cout<<"Chosen to sell"<<endl;
+
+    stocks temp = choose_from_bought();
+
+    if(temp.name == "trap"){
+        return(0);}
+    double sell_price1 = temp.cps+(temp.cps *.10);
+    double sell_price2 = temp.cps-(temp.cps*.15);
+    double current_price = temp.cps;
+
+        for(int x = 0; x<temp.price_list.size(); x++)
+        {
+        current_price = atof(temp.price_list[x].c_str());
+        if(current_price > sell_price1 || current_price < sell_price2)
+        {break;}
+        }
+    stringstream ss;
+    ss<<current_price;
+    string str = ss.str();
+
+    stringstream dd;
+    dd<<temp.shares;
+    string sh = dd.str();
+
+    string trans="Sell "+temp.name+" "+sh+" "+str;
+   // cout<<trans<<endl<<endl;
+    ProcessTransact(trans);
 
 
 }
 
+
+
+
+
+
+
+
 int main () {
-Total_Balance = 10000;
+srand(time(0));
+
+Total_Balance = 100000;
 initialize_prices();
 create_stocks();
-buy();
+int num_trans = 0;
+bool isBuy = 1;
+while(num_trans<10000)
+{
+    if(isBuy == 1){
+        buy();
+        ++num_trans;
+        isBuy = 0;
+    }
+    else{
+       // cout<<num_trans<<endl;
+        sell();
+        ++num_trans;
+
+        isBuy = 1;
+    }
+    //cout<<endl<<"New Total Balance: "<<Total_Balance<<endl<<endl;
+
+}
+
+   cout<<endl<<"New Total Balance: "<<Total_Balance<<endl<<endl;
+
+//cout<<endl;
+
+//sell();
+
 
 //check_all_stocks();
-
-
-
-
-
-
   return 0;
 }
 
