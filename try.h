@@ -22,7 +22,7 @@ vector<string>Samsung;
 vector<string>Tesla;
 
 
-
+string stck1;
 
 
 
@@ -30,6 +30,7 @@ string rand_stock()
 {
    string arr[] = {"Google", "Apple", "AT&T", "Tesla","HP","Samsung"};
    int x = (rand() % 6);
+   //cout<<"This is choosen stock: "<<arr[x]<<endl;
   return (arr[x]);
 
 }

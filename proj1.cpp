@@ -6,21 +6,9 @@
 
 using namespace std;
 
-pthread_mutex_t mutex1, mutex2;
-
-
-
-
+pthread_mutex_t mutex1, mutex2, mutex3, mutex4;
 
 double Total_Balance;
-
-
-
-
-
-
-
-
 
 void ProcessTransact(string transact)
 {
@@ -36,7 +24,6 @@ void ProcessTransact(string transact)
    // cout<<"This is current Total Balance: "<<Total_Balance<<endl;
     istringstream iss(transact);
     iss>>word;
-    //cout<<"1st word"<<word<<endl;
     if (word == "Buy"){
             iss>>word;
             iss>>word2;
@@ -44,10 +31,7 @@ void ProcessTransact(string transact)
 
             share = atoi(word2.c_str());
             double buying =atof(word3.c_str());
-            //mutex lock
             Total_Balance -= (share*buying);
-          //  cout<<"New Total Balance: "<<Total_Balance<<endl<<endl;
-            //mutex unlock
             which_stock_buy(word, share);//.stock_info();
     }
 
@@ -55,18 +39,16 @@ void ProcessTransact(string transact)
             iss>>word; //name of stock
             iss>>word2; //number of stocks
             iss>>word3; //price at which stocks will be sold at
-            //put mutex here lock
             share =  atoi(word2.c_str());
             double selling = atof(word3.c_str());
             Total_Balance += (share*selling);
-          //  cout<<"New Total Balance: "<<Total_Balance<<endl<<endl;
-            //unlock
             which_stock_sell(word);//.stock_info();
 
 
 
 
     }
+  //  sleep(2);
 }
 
 
@@ -76,18 +58,20 @@ void *buy(void*)
     cout<<fixed;
     cout <<setprecision(2);
 
+  // string stck = rand_stock();
 
-   string stck = rand_stock();
-    string bprice = buyprice(stck);
+    string bprice = buyprice(stck1);
 
     stringstream ss;
     ss<<How_Many_Stocks_toBuy(Total_Balance,bprice);
     string num_of_shares = ss.str();
-   string trans = "Buy "+stck+" "+num_of_shares+" "+bprice;//string vectors not ints
-   //cout<<trans<<endl<<endl;
-    cout<<"Thread is here buy";
+   string trans = "Buy "+stck1+" "+num_of_shares+" "+bprice;//string vectors not ints
+   pthread_mutex_lock(&mutex2);
+  cout<<trans<<endl<<endl;
+   pthread_mutex_unlock(&mutex2);
    ProcessTransact(trans);
-   sleep(2);
+//cout<<"check2"<<endl;
+  // sleep(1);
    return NULL;
 
 }
@@ -120,7 +104,6 @@ stocks choose_from_bought()
     {
         bought.push_back(SAMSUNG);
     }
-   //cout<<bought.size()<<endl;
    if(bought.size() != 0){
     int x = rand() % bought.size();
     return (bought[x]);}
@@ -136,9 +119,6 @@ void *sell(void*)
 {
     cout<<fixed;
     cout <<setprecision(2);
-
-
-   // cout<<"Chosen to sell"<<endl;
 
     stocks temp = choose_from_bought();
 
@@ -163,11 +143,15 @@ void *sell(void*)
     string sh = dd.str();
 
     string trans="Sell "+temp.name+" "+sh+" "+str;
-   // cout<<trans<<endl<<endl;
-   cout<<"Thread is here: sell"<<endl;
+ pthread_mutex_lock(&mutex2);
+    cout<<trans<<endl<<endl;
+     pthread_mutex_unlock(&mutex2);
+
+
+
     ProcessTransact(trans);
 
-    sleep(2);
+    //sleep(2);
     return NULL;
 
 
@@ -181,44 +165,49 @@ void *sell(void*)
 
 
 int main () {
-srand(time(0));
+srand(time(NULL));
 
 Total_Balance = 100000;
 initialize_prices();
 create_stocks();
 
-pthread_mutex_init(&mutex1,NULL);
-pthread_mutex_init(&mutex2,NULL);
+
 pthread_t cThreads;
+pthread_mutex_init(&mutex1, NULL);
+pthread_mutex_init(&mutex2, NULL);
+
 
 int num_trans = 0;
 bool isBuy = 1;
 while(num_trans<10000)
 {
     if(isBuy == 1){
-       pthread_create(&cThreads,NULL,buy,NULL);
+        stck1 = rand_stock();
+    pthread_create(&cThreads,NULL,buy,NULL);
         ++num_trans;
         isBuy = 0;
     }
     else{
-       // cout<<num_trans<<endl;
-        pthread_create(&cThreads,NULL,sell,NULL);
+       pthread_create(&cThreads,NULL,sell,NULL);
         ++num_trans;
-
         isBuy = 1;
     }
-    //cout<<endl<<"New Total Balance: "<<Total_Balance<<endl<<endl;
-
+ pthread_mutex_lock(&mutex1);
+ cout<<"Transaction#: "<<num_trans<<endl;
+ pthread_mutex_unlock(&mutex1);
 }
 
-   cout<<endl<<"New Total Balance: "<<Total_Balance<<endl<<endl;
+pthread_join(cThreads, NULL);
 
-//cout<<endl;
+  cout<<endl<<"New Total Balance: "<<Total_Balance<<endl<<endl;
 
-//sell();
+
+
+
 
 
 //check_all_stocks();
+
   return 0;
 }
 
