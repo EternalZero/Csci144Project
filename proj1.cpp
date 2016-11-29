@@ -43,6 +43,7 @@ void ProcessTransact(string transact)
             double selling = atof(word3.c_str());
             Total_Balance += (share*selling);
             which_stock_sell(word);//.stock_info();
+            update_buying_price(word,0);
 
 
 
@@ -124,17 +125,16 @@ void *sell(void*)
 
     if(temp.name == "trap"){
         return(0);}
-    double sell_price1 = temp.cps+(temp.cps *.10);
-    double sell_price2 = temp.cps-(temp.cps*.15);
-    double current_price = temp.cps;
 
-        for(int x = 0; x<temp.price_list.size(); x++)
-        {
-        current_price = atof(temp.price_list[x].c_str());
+    double initial_price = atof(buyprice(temp.name).c_str());
+    double sell_price1 = initial_price+(initial_price *.10);
+    double sell_price2 = initial_price-(initial_price*.15);
+
+        double current_price = atof(temp.price_list[temp.current_price].c_str());
+        cout<<"This is current price: "<<current_price<<" and should not be greater than "<<sell_price1<<" and not less than "<<sell_price2<<endl;
         if(current_price > sell_price1 || current_price < sell_price2)
-        {break;}
-        }
-    stringstream ss;
+        {
+            stringstream ss;
     ss<<current_price;
     string str = ss.str();
 
@@ -146,10 +146,15 @@ void *sell(void*)
  pthread_mutex_lock(&mutex2);
     cout<<trans<<endl<<endl;
      pthread_mutex_unlock(&mutex2);
-
-
-
     ProcessTransact(trans);
+    return NULL;
+
+        }
+    else{
+        update_buying_price(temp.name, temp.current_price+1);
+        return NULL;
+    }
+
 
     //sleep(2);
     return NULL;
@@ -179,7 +184,7 @@ pthread_mutex_init(&mutex2, NULL);
 
 int num_trans = 0;
 bool isBuy = 1;
-while(num_trans<10000)
+while(num_trans<100)
 {
     if(isBuy == 1){
         stck1 = rand_stock();

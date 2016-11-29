@@ -175,6 +175,7 @@ public:
     int shares;   //# of shares
     double cps;  //cost per shares
     vector<string>price_list;
+    int current_price;
     void stock_info();
 };
 
@@ -183,6 +184,7 @@ void stocks::stock_info()
     cout<<"Stock Name: "<<name<<endl;
     cout<<"Number of shares: "<<shares<<endl;
     cout<<"Cost per share: "<<cps<<endl;
+    cout<<"current price: "<<current_price<<endl;
 }
 
  stocks GOOGLE;
@@ -201,6 +203,7 @@ void create_stocks()// stocks* g, stocks* a, stocks* attt, stocks* hpp, stocks* 
     GOOGLE.cps = atof(price.c_str());
     GOOGLE.price_list = Google;
     GOOGLE.shares = 0;
+    GOOGLE.current_price = 0;
 
    // stocks APPLE;
     APPLE.name="Apple";
@@ -208,6 +211,7 @@ void create_stocks()// stocks* g, stocks* a, stocks* attt, stocks* hpp, stocks* 
     APPLE.cps = atof(price.c_str());
     APPLE.price_list = Apple;
     APPLE.shares = 0;
+    APPLE.current_price = 0;
 
    // stocks att;
     att.name="AT&T";
@@ -215,6 +219,7 @@ void create_stocks()// stocks* g, stocks* a, stocks* attt, stocks* hpp, stocks* 
     att.cps = atof(price.c_str());
     att.price_list = ATT;
     att.shares = 0;
+    att.current_price = 0;
 
     //stocks hp;
     hp.name="HP";
@@ -222,6 +227,7 @@ void create_stocks()// stocks* g, stocks* a, stocks* attt, stocks* hpp, stocks* 
     hp.cps = atof(price.c_str());
     hp.price_list = HP;
     hp.shares = 0;
+    hp.current_price = 0;
 
    // stocks TESLA;
     TESLA.name="Tesla";
@@ -229,6 +235,7 @@ void create_stocks()// stocks* g, stocks* a, stocks* attt, stocks* hpp, stocks* 
     TESLA.cps = atof(price.c_str());
     TESLA.price_list = Tesla;
     TESLA.shares = 0;
+    TESLA.current_price = 0;
 
    // stocks SAMSUNG;
     SAMSUNG.name="Samsung";
@@ -236,10 +243,37 @@ void create_stocks()// stocks* g, stocks* a, stocks* attt, stocks* hpp, stocks* 
     SAMSUNG.cps = atof(price.c_str());
     SAMSUNG.price_list = Samsung;
     SAMSUNG.shares = 0;
+    SAMSUNG.current_price = 0;
 
     TRAP.name = "trap";
 
 }
+
+
+void update_buying_price(string stk, int x)
+{
+    if (stk == GOOGLE.name)
+        {GOOGLE.current_price=x;}
+    else if (stk == APPLE.name)
+        {APPLE.current_price=x;}
+    else if(stk == att.name)
+        {att.current_price=x;}
+    else if(stk== TESLA.name)
+        {TESLA.current_price=x;}
+    else if (stk == SAMSUNG.name)
+        {SAMSUNG.current_price=x;}
+    else if (stk == hp.name)
+        {hp.current_price=x;}
+
+
+
+
+
+
+}
+
+
+
 
 
 
