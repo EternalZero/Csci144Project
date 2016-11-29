@@ -49,7 +49,7 @@ void ProcessTransact(string transact)
 
 
     }
-  //  sleep(2);
+    sleep(2);
 }
 
 
@@ -72,7 +72,7 @@ void *buy(void*)
    pthread_mutex_unlock(&mutex2);
    ProcessTransact(trans);
 //cout<<"check2"<<endl;
-  // sleep(1);
+  sleep(2);
    return NULL;
 
 }
@@ -131,7 +131,7 @@ void *sell(void*)
     double sell_price2 = initial_price-(initial_price*.15);
 
         double current_price = atof(temp.price_list[temp.current_price].c_str());
-        cout<<"This is current price: "<<current_price<<" and should not be greater than "<<sell_price1<<" and not less than "<<sell_price2<<endl;
+      //  cout<<"This is current price of "<<temp.name<<": "<<current_price<<" and should not be greater than "<<sell_price1<<" and not less than "<<sell_price2<<endl;
         if(current_price > sell_price1 || current_price < sell_price2)
         {
             stringstream ss;
@@ -147,11 +147,13 @@ void *sell(void*)
     cout<<trans<<endl<<endl;
      pthread_mutex_unlock(&mutex2);
     ProcessTransact(trans);
+    sleep(2);
     return NULL;
 
         }
     else{
         update_buying_price(temp.name, temp.current_price+1);
+        sleep(2);
         return NULL;
     }
 
@@ -172,7 +174,7 @@ void *sell(void*)
 int main () {
 srand(time(NULL));
 
-Total_Balance = 100000;
+Total_Balance = 10000;
 initialize_prices();
 create_stocks();
 
@@ -184,7 +186,7 @@ pthread_mutex_init(&mutex2, NULL);
 
 int num_trans = 0;
 bool isBuy = 1;
-while(num_trans<100)
+while(num_trans<10000)
 {
     if(isBuy == 1){
         stck1 = rand_stock();
@@ -198,7 +200,7 @@ while(num_trans<100)
         isBuy = 1;
     }
  pthread_mutex_lock(&mutex1);
- cout<<"Transaction#: "<<num_trans<<endl;
+// cout<<"Transaction#: "<<num_trans<<endl;
  pthread_mutex_unlock(&mutex1);
 }
 
