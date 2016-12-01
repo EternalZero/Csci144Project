@@ -25,10 +25,6 @@ vector<string>Tesla;
 string stck1;
 
 
-double Total_Cost;
-double Total_Profit;
-
-
 
 string rand_stock()
 {
@@ -188,9 +184,8 @@ void stocks::stock_info()
     cout<<"Stock Name: "<<name<<endl;
     cout<<"Number of shares: "<<shares<<endl;
     cout<<"Cost per share: "<<cps<<endl;
-    cout<<"current price: "<<price_list[current_price]<<endl;
+    cout<<"current price: "<<current_price<<endl;
 }
-
 
  stocks GOOGLE;
     stocks APPLE;

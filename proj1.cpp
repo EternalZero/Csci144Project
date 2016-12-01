@@ -8,14 +8,7 @@ using namespace std;
 
 pthread_mutex_t mutex1, mutex2, mutex3, mutex4;
 
-int num_trans;
-
 double Total_Balance;
-
-double buying_p;
-double selling_P_INC;
-double selling_p_DEC;
-
 
 void ProcessTransact(string transact)
 {
@@ -38,11 +31,8 @@ void ProcessTransact(string transact)
 
             share = atoi(word2.c_str());
             double buying =atof(word3.c_str());
-            double price = (share*buying);
-            Total_Balance -= price;
-            Total_Cost += price;
-
-            stocks temp = which_stock_buy(word, share);//.stock_info();
+            Total_Balance -= (share*buying);
+            which_stock_buy(word, share);//.stock_info();
     }
 
     else{
@@ -51,10 +41,7 @@ void ProcessTransact(string transact)
             iss>>word3; //price at which stocks will be sold at
             share =  atoi(word2.c_str());
             double selling = atof(word3.c_str());
-            double price = (share*selling);
-            Total_Balance += price;
-            Total_Profit +=price;
-
+            Total_Balance += (share*selling);
             which_stock_sell(word);//.stock_info();
             update_buying_price(word,0);
 
@@ -77,18 +64,13 @@ void *buy(void*)
     string bprice = buyprice(stck1);
 
     stringstream ss;
-    int shares_to_buy  = How_Many_Stocks_toBuy(Total_Balance,bprice);
-    if(shares_to_buy != 0)
-    {
-    ss<<shares_to_buy;
+    ss<<How_Many_Stocks_toBuy(Total_Balance,bprice);
     string num_of_shares = ss.str();
    string trans = "Buy "+stck1+" "+num_of_shares+" "+bprice;//string vectors not ints
-  // pthread_mutex_lock(&mutex2);
-  //cout<<trans<<endl<<endl;
-  // pthread_mutex_unlock(&mutex2);
+   pthread_mutex_lock(&mutex2);
+  cout<<trans<<endl<<endl;
+   pthread_mutex_unlock(&mutex2);
    ProcessTransact(trans);
-   num_trans +=1;
-    }
 //cout<<"check2"<<endl;
   sleep(2);
    return NULL;
@@ -145,8 +127,8 @@ void *sell(void*)
         return(0);}
 
     double initial_price = atof(buyprice(temp.name).c_str());
-    double sell_price1 = initial_price+(initial_price *selling_P_INC);
-    double sell_price2 = initial_price-(initial_price*selling_p_DEC);
+    double sell_price1 = initial_price+(initial_price *.10);
+    double sell_price2 = initial_price-(initial_price*.15);
 
         double current_price = atof(temp.price_list[temp.current_price].c_str());
       //  cout<<"This is current price of "<<temp.name<<": "<<current_price<<" and should not be greater than "<<sell_price1<<" and not less than "<<sell_price2<<endl;
@@ -161,11 +143,10 @@ void *sell(void*)
     string sh = dd.str();
 
     string trans="Sell "+temp.name+" "+sh+" "+str;
- //pthread_mutex_lock(&mutex2);
-   // cout<<trans<<endl<<endl;
-    // pthread_mutex_unlock(&mutex2);
+ pthread_mutex_lock(&mutex2);
+    cout<<trans<<endl<<endl;
+     pthread_mutex_unlock(&mutex2);
     ProcessTransact(trans);
-    num_trans +=1;
     sleep(2);
     return NULL;
 
@@ -184,73 +165,55 @@ void *sell(void*)
 }
 
 
-void *server(void*)
-{
-    pthread_mutex_lock(&mutex1);
-    while(num_trans<10000){
-    cout<<"**********Current Balance is: "<<Total_Balance<<endl;
-    double yield = Total_Profit/Total_Cost;
-    cout<<"**********Yield = "<<yield*100<<"%"<<endl;
-    pthread_mutex_unlock(&mutex1);
-    sleep(10);
-
-
-    }
-}
 
 
 
 
 
-int main (int argc, char* argv[])
-{
 
-buying_p = atoi(argv[1]);
-selling_P_INC = ;
-selling_p_DEC = ;
-
+int main () {
 srand(time(NULL));
 
-Total_Balance = 1000000;
+Total_Balance = 10000;
 initialize_prices();
 create_stocks();
 
 
 pthread_t cThreads;
-pthread_t sThread;
 pthread_mutex_init(&mutex1, NULL);
 pthread_mutex_init(&mutex2, NULL);
 
 
-pthread_create(&sThread,NULL,server,NULL);
-
-num_trans = 0;
+int num_trans = 0;
 bool isBuy = 1;
 while(num_trans<10000)
 {
     if(isBuy == 1){
-        double ran=((double)rand()/(double)RAND_MAX);
-            if(ran < buying_p){
         stck1 = rand_stock();
     pthread_create(&cThreads,NULL,buy,NULL);
-            }
-        //++num_trans;
+        ++num_trans;
         isBuy = 0;
     }
     else{
        pthread_create(&cThreads,NULL,sell,NULL);
-        //++num_trans;
+        ++num_trans;
         isBuy = 1;
     }
- //pthread_mutex_lock(&mutex1);
- //cout<<"Transaction#: "<<num_trans<<endl;
- //pthread_mutex_unlock(&mutex1);
+ pthread_mutex_lock(&mutex1);
+// cout<<"Transaction#: "<<num_trans<<endl;
+ pthread_mutex_unlock(&mutex1);
 }
 
 pthread_join(cThreads, NULL);
 
   cout<<endl<<"New Total Balance: "<<Total_Balance<<endl<<endl;
-check_all_stocks();
+
+
+
+
+
+
+//check_all_stocks();
 
   return 0;
 }
