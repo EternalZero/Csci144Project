@@ -191,12 +191,12 @@ while(num_trans<10000)
     if(isBuy == 1){
         stck1 = rand_stock();
     pthread_create(&cThreads,NULL,buy,NULL);
-        ++num_trans;
+      //  ++num_trans;
         isBuy = 0;
     }
     else{
        pthread_create(&cThreads,NULL,sell,NULL);
-        ++num_trans;
+      //  ++num_trans;
         isBuy = 1;
     }
  pthread_mutex_lock(&mutex1);
@@ -205,15 +205,11 @@ while(num_trans<10000)
 }
 
 pthread_join(cThreads, NULL);
+cout<<"Number of transactions: "<<num_trans<<endl;
 
   cout<<endl<<"New Total Balance: "<<Total_Balance<<endl<<endl;
 
-
-
-
-
-
-//check_all_stocks();
+check_all_stocks();
 
   return 0;
 }
