@@ -1,0 +1,38 @@
+Description
+
+In this project, you will implement a multi-threading project that simulates "automated stock trading" where it keeps generating buying/selling worker/transaction threads (buying and selling threads are generated alternatively). Within each buying thread, a stock is randomly selected from a list of your favorite stocks. Then, a buy decision is made with a probability of Z%. Each selling thread, on the other hand, randomly picks one purchased stocks and check its current price. It sells if either (i) price has increased by X%; or (ii) price has decreased by Y%.
+
+You should be able to download stock prices from Yahoo or Google Finance. When checking prices, simply pop the next price from the price list every time you decide to sell a stock. If a sell decision is not supported, then the attempt is given up. The buying price should be the price of the first one in the list. If you decide to randomly create a price list, it will be fine.
+
+It is assumed that the user has unlimited amount of fund. To make it work easily, we can start with a very high balance. Then, a server thread should keep track of the balance and stock information (#shares at a cost of how much). To facilitate the processing, each transaction uses the following format:
+
+ACTION STOCK_NAME NUM_SHARES PRICE_PER_SHARE (ex BUY MSFT 100 35.2)
+
+The total balance is calculated as (revenue from sale - cost from purchase). The server thread should print out the balance and overall yielding on the screen periodically (e.g., every 10 seconds).
+
+Each worker thread should sleep for 2 seconds to simulate the completion of the transaction. This also help maintain many concurrent threads. The programs should continue for 10,000 transactions without crashing.
+
+Special Notes
+
+Make sure you document your program through description of functions within source code and comments for important statement blocks
+Make your program customizable by not hardcoding X, Y, and Z
+Use Gitlab to keep updating your source code in the repository
+Bonus
+
+Implement limited fund so that buying threads will wait till enough fund is available in the account; (10%)
+Use of balance and yielding rate to control X, Y, and Z for more intelligent buying/selling decisions. (5-10% depends on improvement)
+Submission
+
+A zip file containing readme, source code, text files, and report
+Readme should include
+which thread package you use, e.g., c++11, pthread, etc
+which platform you used to compile/run your program, e.g., windows/cygwin, Ubutu, Mac/Xcode/Clang, Linux (redhat)
+IDE if it applies
+Command to compile and run your program (specify if you can compile from the IDE)
+Text file contains the price lists
+Report can be brief in that it outlines major design decisions and algorithms in your project
+Major design decisions on X, Y, Z and how price list is generated (randomly or downloaded from a source)
+Bonus part implemented and design decision with it
+Results obtained (relationship between yield rate and X, Y, Z values)
+Conclusion/Summary.
+2-3 pages should be enough as long as it's complete
